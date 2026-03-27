@@ -1,42 +1,72 @@
-#root {
-  max-width: 1280px;
+.app-shell {
+  width: min(860px, 92vw);
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  display: grid;
+  gap: 1.25rem;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.app-header h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+}
+
+.status-pill {
+  margin: 0;
+  background: #e6f7f8;
+  color: #0f5e69;
+  border: 1px solid #a9dde2;
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.register-card,
+.dashboard-card {
+  border-radius: 14px;
+}
+
+.form-grid {
+  display: grid;
+  gap: 0.75rem;
+  text-align: left;
+}
+
+.field-label {
+  font-weight: 600;
+}
+
+.button-row {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.key-preview {
+  margin-top: 0.6rem;
+  background: #f7fbff;
+  border: 1px dashed #b8cce3;
+  border-radius: 10px;
+  padding: 0.8rem;
+  font-size: 0.92rem;
+}
+
+.key-preview p,
+.dashboard-card p {
+  margin: 0.35rem 0;
+}
+
+@media (max-width: 640px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
