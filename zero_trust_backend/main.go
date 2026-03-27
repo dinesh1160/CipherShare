@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"zero-trust-backend/database"
+	"zero-trust-backend/internal/handlers"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -43,6 +44,9 @@ func main() {
 			"message": "pong",
 		})
 	})
+
+	api := router.Group("/api/v1")
+	api.POST("/users/register", handlers.RegisterUser)
 
 	server := &http.Server{
 		Addr:    ":8080",
