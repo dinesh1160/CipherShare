@@ -64,6 +64,42 @@
   margin: 0.35rem 0;
 }
 
+.upload-card {
+  margin-top: 1rem;
+}
+
+.file-picker {
+  border: 1px solid #c5d3e3;
+  border-radius: 8px;
+  padding: 0.55rem;
+  background: #fff;
+}
+
+.upload-status {
+  margin: 0;
+  color: #1f3f63;
+  font-size: 0.92rem;
+}
+
+.uploaded-files-panel {
+  margin-top: 1rem;
+  border-top: 1px solid #dce7f3;
+  padding-top: 0.85rem;
+}
+
+.uploaded-files-panel h3 {
+  margin: 0 0 0.5rem 0;
+}
+
+.uploaded-files-list {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.uploaded-files-list li {
+  margin-bottom: 0.3rem;
+}
+
 @media (max-width: 640px) {
   .app-header {
     flex-direction: column;

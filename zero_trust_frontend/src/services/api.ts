@@ -11,6 +11,11 @@ export type RegisterUserResponse = {
   message: string;
 };
 
+export type UploadFileChunkResponse = {
+  file_id: number;
+  message?: string;
+};
+
 export async function testConnection() {
   try {
     const response = await fetch(`${API_BASE_URL}/ping`);
@@ -40,4 +45,20 @@ export async function registerUser(payload: RegisterUserRequest): Promise<Regist
   }
 
   return data as RegisterUserResponse;
+}
+
+export async function uploadFileChunk(formData: FormData): Promise<UploadFileChunkResponse> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/files/upload`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const message = typeof data?.error === 'string' ? data.error : 'Chunk upload failed.';
+    throw new Error(message);
+  }
+
+  return data as UploadFileChunkResponse;
 }
