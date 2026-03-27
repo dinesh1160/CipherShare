@@ -1,0 +1,9 @@
+CREATE TABLE file_chunks (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+file_id INTEGER NOT NULL,
+chunk_index INTEGER NOT NULL,
+chunk_data BLOB NOT NULL,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY(file_id) REFERENCES files(id) ON DELETE CASCADE,
+UNIQUE(file_id, chunk_index)
+);

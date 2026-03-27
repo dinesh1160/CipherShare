@@ -66,7 +66,25 @@ func RunMigrations() error {
 		return fmt.Errorf("create schema_migrations table: %w", err)
 	}
 
-	const version = "000001_create_users.sql"
+	migrations := []struct {
+		version      string
+		tableToCheck string
+	}{
+		{version: "000001_create_users.sql", tableToCheck: "users"},
+		{version: "000002_create_files.sql", tableToCheck: "files"},
+		{version: "000003_create_chunks.sql", tableToCheck: "file_chunks"},
+	}
+
+	for _, migration := range migrations {
+		if err := applyMigration(migration.version, migration.tableToCheck); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func applyMigration(version string, tableToCheck string) error {
 	migrationPath := filepath.Join("database", "migrations", version)
 
 	var appliedCount int
@@ -80,17 +98,17 @@ func RunMigrations() error {
 		return nil
 	}
 
-	var usersTableExists int
-	err = DB.QueryRow("SELECT COUNT(1) FROM sqlite_master WHERE type = 'table' AND name = 'users'").Scan(&usersTableExists)
+	var tableExists int
+	err = DB.QueryRow("SELECT COUNT(1) FROM sqlite_master WHERE type = 'table' AND name = ?", tableToCheck).Scan(&tableExists)
 	if err != nil {
-		return fmt.Errorf("check users table existence: %w", err)
+		return fmt.Errorf("check table existence for %s: %w", tableToCheck, err)
 	}
 
-	if usersTableExists > 0 {
+	if tableExists > 0 {
 		if _, err := DB.Exec("INSERT INTO schema_migrations(version) VALUES(?)", version); err != nil {
 			return fmt.Errorf("record existing migration %s: %w", version, err)
 		}
-		log.Printf("users table already exists, marked migration as applied: %s", version)
+		log.Printf("table %s already exists, marked migration as applied: %s", tableToCheck, version)
 		return nil
 	}
 
@@ -101,7 +119,7 @@ func RunMigrations() error {
 
 	tx, err := DB.Begin()
 	if err != nil {
-		return fmt.Errorf("begin migration transaction: %w", err)
+		return fmt.Errorf("begin migration transaction for %s: %w", version, err)
 	}
 
 	defer func() {
@@ -119,7 +137,7 @@ func RunMigrations() error {
 	}
 
 	if err = tx.Commit(); err != nil {
-		return fmt.Errorf("commit migration transaction: %w", err)
+		return fmt.Errorf("commit migration transaction for %s: %w", version, err)
 	}
 
 	log.Printf("applied migration: %s", version)

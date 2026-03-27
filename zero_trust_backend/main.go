@@ -47,6 +47,7 @@ func main() {
 
 	api := router.Group("/api/v1")
 	api.POST("/users/register", handlers.RegisterUser)
+	api.POST("/files/upload", handlers.UploadFileChunk)
 
 	server := &http.Server{
 		Addr:    ":8080",
