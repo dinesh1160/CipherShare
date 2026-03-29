@@ -50,6 +50,11 @@
   flex-wrap: wrap;
 }
 
+.auth-toggle-row {
+  display: flex;
+  gap: 0.6rem;
+}
+
 .key-preview {
   margin-top: 0.6rem;
   background: #f7fbff;
@@ -98,6 +103,19 @@
 
 .uploaded-files-list li {
   margin-bottom: 0.3rem;
+}
+
+.filelist-unlock-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+@media (max-width: 640px) {
+  .filelist-unlock-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {

@@ -79,6 +79,29 @@ async function encryptFilename(fileName: string, symmetricKey: Uint8Array): Prom
   return `${sodiumLib.to_hex(nonce)}:${sodiumLib.to_hex(cipher)}`;
 }
 
+export async function decryptFilename(
+  encryptedFilename: string,
+  symmetricKey: Uint8Array | string,
+): Promise<string> {
+  await sodiumLib.ready;
+
+  const [nonceHex, cipherHex] = encryptedFilename.split(':');
+  if (!nonceHex || !cipherHex) {
+    throw new Error('Invalid encrypted filename format.');
+  }
+
+  const nonce = sodiumLib.from_hex(nonceHex);
+  const cipher = sodiumLib.from_hex(cipherHex);
+  const symmetricKeyBytes = toBytes(symmetricKey, 'symmetricKey');
+
+  const plaintext = sodiumLib.crypto_secretbox_open_easy(cipher, nonce, symmetricKeyBytes);
+  if (!plaintext) {
+    throw new Error('Unable to decrypt filename with provided key.');
+  }
+
+  return sodiumLib.to_string(asBytes(plaintext, 'decrypted filename'));
+}
+
 export async function computeSHA256(file: File): Promise<string> {
   const input = await file.arrayBuffer();
   const digest = await crypto.subtle.digest('SHA-256', input);

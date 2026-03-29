@@ -11,6 +11,7 @@ import (
 
 	"zero-trust-backend/database"
 	"zero-trust-backend/internal/handlers"
+	"zero-trust-backend/internal/middleware"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -33,8 +34,8 @@ func main() {
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173"}, // React dev server
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "X-User-ID"},
+		ExposeHeaders:    []string{"Content-Length", "X-File-Hash", "X-Signature", "X-Encrypted-Key"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
@@ -47,7 +48,13 @@ func main() {
 
 	api := router.Group("/api/v1")
 	api.POST("/users/register", handlers.RegisterUser)
-	api.POST("/files/upload", handlers.UploadFileChunk)
+	api.POST("/users/login", handlers.LoginUser)
+
+	files := api.Group("/files")
+	files.Use(middleware.AuthMiddleware())
+	files.POST("/upload", handlers.UploadFileChunk)
+	files.GET("/my-files", handlers.GetMyFiles)
+	files.GET("/:id/download", handlers.DownloadFile)
 
 	server := &http.Server{
 		Addr:    ":8080",

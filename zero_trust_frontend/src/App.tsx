@@ -3,7 +3,10 @@ import { testConnection } from './services/api';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import Register from './components/Register';
-import FileUpload, { type UploadedFileRecord } from './components/FileUpload';
+import Login from './components/Login';
+import FileUpload from './components/FileUpload';
+import FileList from './components/FileList';
+import type { MyFileItem } from './services/api';
 import './App.css';
 
 type CurrentUser = {
@@ -16,7 +19,9 @@ type CurrentUser = {
 function App() {
   const [backendStatus, setBackendStatus] = useState<string>('Not connected');
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
-  const [files, setFiles] = useState<UploadedFileRecord[]>([]);
+  const [files, setFiles] = useState<MyFileItem[]>([]);
+  const [filesRefreshKey, setFilesRefreshKey] = useState(0);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
   useEffect(() => {
     testConnection().then((data) => {
@@ -28,21 +33,11 @@ function App() {
     });
 
     const storedUser = localStorage.getItem('zt_current_user');
-    const storedFiles = localStorage.getItem('zt_uploaded_files');
-
     if (storedUser) {
       try {
         setCurrentUser(JSON.parse(storedUser) as CurrentUser);
       } catch {
         localStorage.removeItem('zt_current_user');
-      }
-    }
-
-    if (storedFiles) {
-      try {
-        setFiles(JSON.parse(storedFiles) as UploadedFileRecord[]);
-      } catch {
-        localStorage.removeItem('zt_uploaded_files');
       }
     }
   }, []);
@@ -52,17 +47,12 @@ function App() {
       localStorage.removeItem(`zt_encrypted_private_keys_${currentUser.username}`);
     }
     localStorage.removeItem('zt_current_user');
-    localStorage.removeItem('zt_uploaded_files');
     setCurrentUser(null);
     setFiles([]);
   };
 
-  const handleUploadedFile = (uploaded: UploadedFileRecord) => {
-    setFiles((prev) => {
-      const next = [uploaded, ...prev];
-      localStorage.setItem('zt_uploaded_files', JSON.stringify(next));
-      return next;
-    });
+  const handleUploadedFile = () => {
+    setFilesRefreshKey((prev) => prev + 1);
   };
 
   return (
@@ -73,9 +63,28 @@ function App() {
       </header>
 
       {!currentUser ? (
-        <Register onRegistered={setCurrentUser} />
+        <>
+          <div className="auth-toggle-row">
+            <Button
+              label="Login"
+              outlined={authMode !== 'login'}
+              onClick={() => setAuthMode('login')}
+            />
+            <Button
+              label="Register"
+              outlined={authMode !== 'register'}
+              onClick={() => setAuthMode('register')}
+            />
+          </div>
+
+          {authMode === 'login' ? (
+            <Login onLoggedIn={setCurrentUser} />
+          ) : (
+            <Register onRegistered={setCurrentUser} />
+          )}
+        </>
       ) : (
-        <Card title="Dashboard" className="dashboard-card">
+        <Card title="Files Dashboard" className="dashboard-card">
           <p>
             <strong>Welcome:</strong> {currentUser.username}
           </p>
@@ -92,23 +101,19 @@ function App() {
           <FileUpload
             ownerId={currentUser.userId}
             username={currentUser.username}
+            currentUserId={currentUser.userId}
             onUploaded={handleUploadedFile}
           />
 
-          <div className="uploaded-files-panel">
-            <h3>Uploaded Files</h3>
-            {files.length === 0 ? (
-              <p>No encrypted files uploaded yet.</p>
-            ) : (
-              <ul className="uploaded-files-list">
-                {files.map((file) => (
-                  <li key={`${file.fileId}-${file.uploadedAt}`}>
-                    <strong>{file.name}</strong> ({(file.size / 1024).toFixed(2)} KB) | file_id: {file.fileId}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          <FileList
+            currentUserId={currentUser.userId}
+            username={currentUser.username}
+            publicSignKeyHex={currentUser.publicKeySign}
+            refreshKey={filesRefreshKey}
+            onFilesChange={setFiles}
+          />
+
+          <p>Total files visible: {files.length}</p>
 
           <Button label="Log Out" severity="danger" outlined onClick={handleLogout} />
         </Card>

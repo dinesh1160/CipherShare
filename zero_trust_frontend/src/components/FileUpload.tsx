@@ -19,10 +19,11 @@ export type UploadedFileRecord = {
 type FileUploadProps = {
   ownerId: number;
   username: string;
-  onUploaded: (file: UploadedFileRecord) => void;
+  currentUserId: number;
+  onUploaded: () => void;
 };
 
-export default function FileUpload({ ownerId, username, onUploaded }: FileUploadProps) {
+export default function FileUpload({ ownerId, username, currentUserId, onUploaded }: FileUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [passphrase, setPassphrase] = useState('');
   const [progress, setProgress] = useState(0);
@@ -77,6 +78,7 @@ export default function FileUpload({ ownerId, username, onUploaded }: FileUpload
       setStatus('Uploading encrypted chunks...');
       for (let i = 0; i < totalChunks; i += 1) {
         const chunk = encryptedPayload.chunks[i];
+        const chunkPayload = `${JSON.stringify(chunk)}\n--ZT-CHUNK-END--\n`;
         const formData = new FormData();
         formData.append('encrypted_filename', encryptedPayload.encryptedFilename);
         formData.append('file_hash', encryptedPayload.hash);
@@ -87,7 +89,7 @@ export default function FileUpload({ ownerId, username, onUploaded }: FileUpload
         formData.append('total_chunks', String(totalChunks));
         formData.append(
           'chunk_data',
-          new Blob([chunk.cipherHex], { type: 'application/octet-stream' }),
+          new Blob([chunkPayload], { type: 'application/octet-stream' }),
           `chunk-${chunk.index}.bin`,
         );
 
@@ -99,22 +101,20 @@ export default function FileUpload({ ownerId, username, onUploaded }: FileUpload
           formData.append('file_id', String(returnedFileId));
         }
 
-        const response = await uploadFileChunk(formData);
+        const response = await uploadFileChunk(formData, currentUserId);
         returnedFileId = response.file_id;
 
         const uploadPercent = Math.round(((i + 1) / totalChunks) * 50);
         setProgress(50 + uploadPercent);
       }
 
-      const uploadedRecord: UploadedFileRecord = {
-        fileId: returnedFileId,
-        name: selectedFile.name,
-        size: selectedFile.size,
-        hash: encryptedPayload.hash,
-        uploadedAt: new Date().toISOString(),
-      };
+      const fileKeyStoreKey = `zt_file_keys_${username}`;
+      const existingStoreRaw = localStorage.getItem(fileKeyStoreKey);
+      const existingStore = existingStoreRaw ? (JSON.parse(existingStoreRaw) as Record<string, string>) : {};
+      existingStore[String(returnedFileId)] = encryptedPayload.symmetricKey;
+      localStorage.setItem(fileKeyStoreKey, JSON.stringify(existingStore));
 
-      onUploaded(uploadedRecord);
+      onUploaded();
       setStatus('Upload complete. Stored encrypted chunks on backend.');
       setSelectedFile(null);
     } catch (error) {
