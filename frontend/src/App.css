@@ -1,0 +1,138 @@
+.app-shell {
+  width: min(860px, 92vw);
+  margin: 0 auto;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  color: var(--text-strong);
+}
+
+.status-pill {
+  margin: 0;
+  background: #1f2b26;
+  color: var(--text-primary);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.register-card,
+.dashboard-card {
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.form-grid {
+  display: grid;
+  gap: 0.75rem;
+  text-align: left;
+}
+
+.field-label {
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.button-row {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.auth-toggle-row {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.key-preview {
+  margin-top: 0.6rem;
+  background: #1a2521;
+  border: 1px dashed var(--accent);
+  border-radius: 10px;
+  padding: 0.8rem;
+  font-size: 0.92rem;
+}
+
+.key-preview p,
+.dashboard-card p {
+  margin: 0.35rem 0;
+}
+
+.upload-card {
+  margin-top: 1rem;
+}
+
+.file-picker {
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.55rem;
+  background: #111917;
+  color: var(--text-primary);
+}
+
+.upload-status {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 0.92rem;
+}
+
+.uploaded-files-panel {
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 0.85rem;
+}
+
+.uploaded-files-panel h3 {
+  margin: 0 0 0.5rem 0;
+}
+
+.uploaded-files-list {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.uploaded-files-list li {
+  margin-bottom: 0.3rem;
+}
+
+.files-card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.filelist-unlock-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+@media (max-width: 640px) {
+  .filelist-unlock-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

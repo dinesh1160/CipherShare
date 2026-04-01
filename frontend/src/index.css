@@ -1,0 +1,129 @@
+:root {
+  --bg-primary: #0f1412;
+  --surface: #17201d;
+  --accent: #4a675d;
+  --text-primary: #aec3b0;
+  --text-strong: #c7d8c9;
+  --border-subtle: #2a3a34;
+
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--text-primary);
+  background:
+    radial-gradient(circle at 18% 0%, #1a2521 0%, #111816 42%, #0f1412 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  padding: 2.25rem 1rem;
+  color: var(--text-primary);
+  background: transparent;
+}
+
+.p-component {
+  color: var(--text-primary);
+}
+
+.p-card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.p-card .p-card-title {
+  color: var(--text-strong);
+}
+
+.p-inputtext,
+.p-password input,
+.p-password .p-inputtext {
+  background: #111917;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.p-inputtext:enabled:focus,
+.p-password .p-inputtext:enabled:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.p-button {
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: #eaf2eb;
+}
+
+.p-button.p-button-outlined {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--accent);
+}
+
+.p-button:enabled:hover {
+  background: #5a7a6e;
+  border-color: #5a7a6e;
+}
+
+.p-datatable .p-datatable-header,
+.p-datatable .p-datatable-thead > tr > th,
+.p-datatable .p-datatable-tbody > tr > td,
+.p-datatable .p-datatable-footer {
+  background: var(--surface);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+.p-datatable .p-datatable-tbody > tr {
+  background: #141d1a;
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+  background: #1c2924;
+}
+
+.p-paginator {
+  background: var(--surface);
+  border-color: var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.p-paginator .p-paginator-page,
+.p-paginator .p-paginator-next,
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-last {
+  color: var(--text-primary);
+}
+
+.p-paginator .p-paginator-page.p-highlight {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #eaf2eb;
+}
+
+.p-progressbar {
+  background: #111917;
+  border: 1px solid var(--border-subtle);
+}
+
+.p-progressbar .p-progressbar-value {
+  background: var(--accent);
+}
+
+.p-toast .p-toast-message {
+  background: var(--surface);
+  border-color: var(--border-subtle);
+  color: var(--text-primary);
+}
